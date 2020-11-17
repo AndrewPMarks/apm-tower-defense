@@ -1,5 +1,6 @@
 import Tile from './Tile';
-import grass from '../images/grass.jpg';
+import grass from '../../images/grass.png';
+import randomColor from 'randomcolor';
 import { loadImage } from 'canvas';
 
 export default class LandTile extends Tile {
@@ -24,7 +25,8 @@ export default class LandTile extends Tile {
 		x: number,
 		y: number,
 		size: { width: number; height: number },
-		offset: { x: number; y: number }
+		offset: { x: number; y: number },
+		frameCount: number
 	) => {
 		if (this.image) {
 			ctx.drawImage(
@@ -35,5 +37,13 @@ export default class LandTile extends Tile {
 				size.height
 			);
 		}
+
+		ctx.fillStyle = randomColor({
+			format: 'rgba',
+			hue: '#22FF55',
+			seed: this.seed,
+			alpha: 0.1,
+		});
+		ctx.fillRect(x + offset.x, y + offset.y, size.width, size.height);
 	};
 }

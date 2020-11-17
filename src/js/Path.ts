@@ -19,58 +19,69 @@ export default class Path {
 		};
 
 		let ret = {
-			x: 0,
-			y: 0,
+			pos: {
+				x: 0,
+				y: 0,
+			},
+			direction: 0,
 		};
 
 		if (tilePosition < map.tileSize.width / 2) {
 			switch (direction.from) {
 				case 'south':
-					ret.y =
+					ret.pos.y =
 						tileCenter.y - tilePosition + map.tileSize.height / 2;
-					ret.x = tileCenter.x;
+					ret.pos.x = tileCenter.x;
+					ret.direction = 3 * (Math.PI / 2);
 					break;
 				case 'north':
-					ret.y =
+					ret.pos.y =
 						tileCenter.y + tilePosition - map.tileSize.height / 2;
-					ret.x = tileCenter.x;
+					ret.pos.x = tileCenter.x;
+					ret.direction = Math.PI / 2;
 					break;
 
 				case 'east':
-					ret.y = tileCenter.y;
-					ret.x =
+					ret.pos.y = tileCenter.y;
+					ret.pos.x =
 						tileCenter.x - tilePosition + map.tileSize.width / 2;
+					ret.direction = Math.PI;
 					break;
 
 				case 'west':
-					ret.y = tileCenter.y;
-					ret.x =
+					ret.pos.y = tileCenter.y;
+					ret.pos.x =
 						tileCenter.x + tilePosition - map.tileSize.width / 2;
+					ret.direction = 0;
 					break;
 			}
 		} else {
 			switch (direction.to) {
 				case 'north':
-					ret.y =
+					ret.pos.y =
 						tileCenter.y - tilePosition + map.tileSize.height / 2;
-					ret.x = tileCenter.x;
+					ret.pos.x = tileCenter.x;
+					ret.direction = 3 * (Math.PI / 2);
 					break;
 				case 'south':
-					ret.y =
+					ret.pos.y =
 						tileCenter.y + tilePosition - map.tileSize.height / 2;
-					ret.x = tileCenter.x;
+					ret.pos.x = tileCenter.x;
+					ret.direction = Math.PI / 2;
 					break;
 
 				case 'west':
-					ret.y = tileCenter.y;
-					ret.x =
+					ret.pos.y = tileCenter.y;
+					ret.pos.x =
 						tileCenter.x - tilePosition + map.tileSize.width / 2;
+					ret.direction = Math.PI;
 					break;
 
 				case 'east':
-					ret.y = tileCenter.y;
-					ret.x =
+					ret.pos.y = tileCenter.y;
+					ret.pos.x =
 						tileCenter.x + tilePosition - map.tileSize.width / 2;
+					ret.direction = 0;
 					break;
 			}
 		}

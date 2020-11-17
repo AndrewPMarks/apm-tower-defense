@@ -1,8 +1,9 @@
-import BlankTile from './BlankTile';
-import Tile from './Tile';
-import PathTile from './PathTile';
-import LandTile from './LandTile';
-import WaterTile from './WaterTile';
+import BlankTile from './Tiles/BlankTile';
+import Tile from './Tiles/Tile';
+import PathTile from './Tiles/PathTile';
+import LandTile from './Tiles/LandTile';
+import WaterTile from './Tiles/WaterTile';
+import BridgeTile from './Tiles/BridgeTile';
 import PathNode from './PathNode';
 import Path from './Path';
 
@@ -40,7 +41,7 @@ export default class Map {
 						new WaterTile(
 							this.tileSize.width,
 							this.tileSize.height,
-							i
+							Math.floor(Math.random() * i * 3)
 						)
 					);
 					break;
@@ -50,16 +51,40 @@ export default class Map {
 						new LandTile(
 							this.tileSize.width,
 							this.tileSize.height,
-							i
+							Math.floor(Math.random() * i * 3)
 						)
 					);
 					break;
 			}
 		}
 
-		let pathTile = new PathTile(this.tileSize.width, this.tileSize.height);
-		for (let pathNode of mapObject.path) {
+		let pathTile = new PathTile(
+			this.tileSize.width,
+			this.tileSize.height,
+			1
+		);
+		for (let index in mapObject.path) {
+			let pathNode = mapObject.path[index];
+			if (this.getTile(pathNode[0], pathNode[1]) instanceof LandTile) {
+				pathTile = new PathTile(
+					this.tileSize.width,
+					this.tileSize.height,
+					Math.floor(Math.random() * parseInt(index) * 3)
+				);
+			} else {
+				pathTile = new BridgeTile(
+					this.tileSize.width,
+					this.tileSize.height,
+					Math.floor(Math.random() * parseInt(index) * 3)
+				);
+			}
 			this.setTile(pathNode[0], pathNode[1], pathTile);
+		}
+	};
+
+	clear = () => {
+		for (let tile of this.tiles) {
+			tile.occupied = false;
 		}
 	};
 
@@ -68,7 +93,8 @@ export default class Map {
 	};
 
 	setTile = (x: number, y: number, tile: Tile) => {
-		if (tile instanceof PathTile) this.path.nodes.push(new PathNode(x, y));
+		if (tile instanceof PathTile || tile instanceof BridgeTile)
+			this.path.nodes.push(new PathNode(x, y));
 		this.tiles[y * this.width + x] = tile;
 	};
 

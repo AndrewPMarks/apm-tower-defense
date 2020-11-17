@@ -1,14 +1,19 @@
 import Tile from './Tile';
 import { loadImage } from 'canvas';
-import path from '../images/path.jpg';
+import wood from '../../images/wood.png';
+import randomColor from 'randomcolor';
 
-export default class PathTile extends Tile {
+export default class BridgeTile extends Tile {
 	image: CanvasImageSource;
 
-	constructor(public width: number, public height: number) {
+	constructor(
+		public width: number,
+		public height: number,
+		public seed: number
+	) {
 		super(width, height);
 
-		loadImage(path).then((image) => {
+		loadImage(wood).then((image) => {
 			//TS does not allow assignment of Image type to
 			//CanvasImageSource type, but it functions correctly
 			// @ts-ignore
@@ -21,7 +26,8 @@ export default class PathTile extends Tile {
 		x: number,
 		y: number,
 		size: { width: number; height: number },
-		offset: { x: number; y: number }
+		offset: { x: number; y: number },
+		frameCount: number
 	) => {
 		if (this.image) {
 			ctx.drawImage(
@@ -32,5 +38,13 @@ export default class PathTile extends Tile {
 				size.height
 			);
 		}
+
+		ctx.fillStyle = randomColor({
+			format: 'rgba',
+			hue: 'brown',
+			seed: this.seed,
+			alpha: 0.05,
+		});
+		ctx.fillRect(x + offset.x, y + offset.y, size.width, size.height);
 	};
 }

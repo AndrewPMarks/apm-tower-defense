@@ -6,6 +6,42 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+#money::before {
+	content: '$';
+}
+
+#tower-overlay {
+	position: fixed;
+	box-sizing: border-box;
+	bottom: 0;
+	width: 200px;
+	left: 0;
+	top: 0;
+	background-color: #000000aa;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.1s linear;
+	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
+	color: white;
+	padding: 1em;
+	font-size: 14px;
+
+	&.visible {
+		pointer-events: all;
+		opacity: 1;
+	}
+
+	.stat {
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 0.5em;
+
+		.label {
+			padding-right: 0.2em;
+		}
+	}
+}
+
 #stats {
 	position: fixed;
 	top: 0;
@@ -21,12 +57,20 @@ body {
 	.stat {
 		display: flex;
 		justify-content: space-between;
+		flex-direction: column;
 		padding: 0.2em 0;
 		transition: all 0.3s ease-out;
 		cursor: default;
 
 		.label {
-			padding-right: 0.5em;
+			transition: all 0.3s ease-out;
+			text-align: left;
+			border-bottom: 1px solid rgba(255, 255, 255, 0);
+			box-sizing: border-box;
+		}
+
+		.value {
+			text-align: right;
 		}
 
 		&.secondary {
@@ -39,9 +83,13 @@ body {
 
 	&:hover {
 		.stat {
+			.label {
+				border-color: rgba(255, 255, 255, 0.8);
+				margin-bottom: 0.2em;
+			}
 			&.secondary {
 				max-width: 200px;
-				max-height: 25px;
+				max-height: 50px;
 				padding: 0.2em 0;
 			}
 		}

@@ -5,18 +5,42 @@
 	</head>
 	<body>
 		<canvas id="game"></canvas>
+
+		<div id="tower-overlay">
+			<div class="stat">
+				<div class="label">Targeting mode:</div>
+				<div class="value" id="stat-targeting-mode"></div>
+			</div>
+			<div class="stat">
+				<div class="label">Fire rate:</div>
+				<div class="value" id="stat-speed"></div>
+			</div>
+			<div class="stat">
+				<div class="label">Damage:</div>
+				<div class="value" id="stat-damage"></div>
+			</div>
+			<div class="stat">
+				<div class="label">Total damage done:</div>
+				<div class="value" id="stat-damage-done"></div>
+			</div>
+		</div>
+
 		<div id="stats">
 			<div class="stat">
-				<div class="label">Lives:</div>
+				<div class="label">Lives</div>
 				<div class="value" id="lives">--</div>
 			</div>
 			<div class="stat">
-				<div class="label">FPS:</div>
-				<div class="value" id="fps">--</div>
+				<div class="label">Money</div>
+				<div class="value" id="money">0</div>
 			</div>
 			<div class="stat secondary">
-				<div class="label">Frame Count:</div>
-				<div class="value" id="frame-count">----</div>
+				<div class="label">Enemy Count</div>
+				<div class="value" id="enemy-count">-</div>
+			</div>
+			<div class="stat secondary">
+				<div class="label">FPS</div>
+				<div class="value" id="fps">--</div>
 			</div>
 		</div>
 

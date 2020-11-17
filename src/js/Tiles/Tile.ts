@@ -8,7 +8,8 @@ export default abstract class Tile {
 		x: number,
 		y: number,
 		size: { width: number; height: number },
-		offset: { x: number; y: number }
+		offset: { x: number; y: number },
+		frameCount: number
 	) => {};
 
 	setOccupied = (bool = true) => {

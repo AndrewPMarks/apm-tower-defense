@@ -1,3 +1,3 @@
 export default class Projectile {
-	constructor() {}
+	constructor(public damage: number) {}
 }
