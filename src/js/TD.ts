@@ -9,19 +9,23 @@ export default class TD {
 	state = {
 		paused: true,
 	};
-	money = 0;
+	speed = 1;
+	startingLives = 250;
+	startingMoney = 250;
 	lastTime = 0;
 	frameCount = 0;
 	fpsCounter = false;
 	lifeCounter = false;
 	enemyCounter = false;
 	moneyCounter = false;
+	speedDisplay = false;
 	map: Map;
 	enemies: Enemy[] = [];
-	lives = 100;
+	lives: number;
 	towers: Tower[] = [];
 	placeTower = false;
 	selectedTower: Tower;
+	money: number;
 
 	mousePos = {
 		x: 0,
@@ -35,18 +39,27 @@ export default class TD {
 		},
 		public els: {
 			towerOverlay: HTMLElement;
+			gameControls: HTMLElement;
 			fps?: HTMLElement;
 			lives?: HTMLElement;
 			enemyCount?: HTMLElement;
 			moneyCount?: HTMLElement;
+			speed?: HTMLElement;
 		}
 	) {
 		if (this.canvas == null)
 			throw new Error('No canvas element specified!');
 
+		this.money = this.startingMoney;
+		this.lives = this.startingLives;
+
 		if (this.els.fps) this.fpsCounter = true;
 		if (this.els.enemyCount) this.enemyCounter = true;
-		if (this.els.moneyCount) this.moneyCounter = true;
+		if (this.els.moneyCount) {
+			this.moneyCounter = true;
+			this.updateBalance();
+		}
+		if (this.els.speed) this.speedDisplay = true;
 		if (this.els.lives) {
 			this.lifeCounter = true;
 			this.takeLives(0);
@@ -65,6 +78,10 @@ export default class TD {
 		window.onmousemove = this.handleMouseMove;
 	}
 
+	updateBalance = () => {
+		this.els.moneyCount.innerText = `${this.money}`;
+	};
+
 	clear = () => {
 		this.selectedTower = null;
 		this.closeTowerOverlay();
@@ -72,6 +89,19 @@ export default class TD {
 		for (let tower of this.towers) {
 			tower.deSelect();
 		}
+	};
+
+	increaseSpeed = () => {
+		if (this.speed < 3) this.setSpeed(this.speed + 1);
+	};
+
+	decreaseSpeed = () => {
+		if (this.speed > 1) this.setSpeed(this.speed - 1);
+	};
+
+	setSpeed = (multiplier: number) => {
+		this.speed = multiplier;
+		if (this.speedDisplay) this.els.speed.innerText = `${this.speed}x`;
 	};
 
 	openTowerOverlay = () => {
@@ -87,10 +117,40 @@ export default class TD {
 		let damageDoneEl = el.querySelector('#stat-damage-done');
 		damageDoneEl.innerHTML = `${this.selectedTower.damageDone}`;
 
-		let targetingModeEl = el.querySelector('#stat-targeting-mode');
-		targetingModeEl.innerHTML = `${
+		let rangeEl = el.querySelector('#stat-range');
+		rangeEl.innerHTML = `${this.selectedTower.range}`;
+
+		let targetingModeButtonEl = el.querySelector(
+			'#stat-targeting-mode'
+		) as HTMLSelectElement;
+		targetingModeButtonEl.innerHTML = `${
 			this.selectedTower.targetingMode === 'first' ? 'First' : 'Nearest'
 		}`;
+		targetingModeButtonEl.onclick = (e) => {
+			let el = e.target as HTMLSelectElement;
+			this.selectedTower.targetingMode =
+				this.selectedTower.targetingMode === 'first'
+					? 'nearest'
+					: 'first';
+			this.openTowerOverlay();
+		};
+
+		let upgradeButtonEl = el.querySelector(
+			'#upgrade-button'
+		) as HTMLSelectElement;
+		let cost = this.selectedTower.getUpgradeCost();
+		upgradeButtonEl.innerHTML = cost ? `$${cost.toString()}` : 'MAX';
+
+		upgradeButtonEl.onclick = (e) => {
+			let el = e.target as HTMLSelectElement;
+			let cost = this.selectedTower.getUpgradeCost();
+			if (cost && this.money >= cost) {
+				this.selectedTower.upgrade();
+				this.money -= cost;
+				this.updateBalance();
+				this.openTowerOverlay();
+			}
+		};
 	};
 
 	closeTowerOverlay = () => {
@@ -147,28 +207,34 @@ export default class TD {
 						}
 					}
 				} else if (this.placeTower) {
-					this.towers.push(
-						new Tower(
-							tileX * this.map.tileSize.width +
-								this.map.tileSize.width / 2,
-							tileY * this.map.tileSize.height +
-								this.map.tileSize.width / 2,
-							10,
-							this.map.tileSize.width,
-							tileX,
-							tileY
-						)
+					let tower = new Tower(
+						tileX * this.map.tileSize.width +
+							this.map.tileSize.width / 2,
+						tileY * this.map.tileSize.height +
+							this.map.tileSize.width / 2,
+						10,
+						this.map.tileSize.width,
+						tileX,
+						tileY
 					);
-					clickedTile.setOccupied(true);
+
+					if (this.money >= tower.baseCost) {
+						this.towers.push(tower);
+						this.money -= tower.baseCost;
+						this.updateBalance();
+						clickedTile.setOccupied(true);
+					}
 				}
 			}
 		}
 	};
 
 	reset = () => {
-		this.lives = 100;
+		this.lives = this.startingLives;
 		this.enemies = [];
 		this.towers = [];
+		this.money = this.startingMoney;
+		this.updateBalance();
 		this.clear();
 		this.placeTower = false;
 		this.map.clear();
@@ -189,6 +255,29 @@ export default class TD {
 
 	loadMap = (map: Map) => {
 		this.map = map;
+
+		let controlEl = this.els.gameControls;
+		let mapSelector = controlEl.querySelector('#map-selector');
+		for (let map of this.map.maps) {
+			let button = document.createElement('button');
+			button.innerText = map.name;
+			button.classList.add('map-option', 'control-button');
+			button.onclick = () => {
+				this.map.importMap(map);
+				this.reset();
+			};
+			mapSelector.appendChild(button);
+		}
+
+		let generalControls = controlEl.querySelector('#general-controls');
+		let resetButton = document.createElement('button');
+		resetButton.innerText = 'Reset';
+		resetButton.classList.add('map-option', 'control-button');
+		resetButton.onclick = () => {
+			this.reset();
+		};
+
+		generalControls.appendChild(resetButton);
 	};
 
 	sizeFill = () => {
@@ -235,7 +324,7 @@ export default class TD {
 	loop = (time: number) => {
 		let delta = this.frameCount === 0 ? 1000 / 60 : time - this.lastTime;
 		this.render();
-		this.update(delta * 0.01);
+		this.update(delta * 0.01 * this.speed);
 
 		if (this.fpsCounter && this.frameCount % 60 === 0)
 			this.els.fps.innerText = Math.round(1000 / delta).toString();
@@ -245,7 +334,8 @@ export default class TD {
 	};
 
 	getXOffset = () => {
-		return this.els.towerOverlay.classList.contains('visible') ? 100 : 0;
+		return 100;
+		//return this.els.towerOverlay.classList.contains('visible') ? 100 : 0;
 	};
 
 	render = () => {

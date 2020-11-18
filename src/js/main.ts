@@ -3,9 +3,6 @@ import TD from './TD';
 import Map from './Map';
 import Enemy from './Enemy';
 
-import firstMap from './maps/first';
-import secondMap from './maps/second';
-
 window.onload = () => {
 	const game = new TD(
 		document.getElementById('game') as HTMLCanvasElement,
@@ -13,16 +10,17 @@ window.onload = () => {
 			fillScreen: true,
 		},
 		{
+			gameControls: document.getElementById('game-controls'),
 			towerOverlay: document.getElementById('tower-overlay'),
 			fps: document.getElementById('fps'),
 			lives: document.getElementById('lives'),
 			enemyCount: document.getElementById('enemy-count'),
 			moneyCount: document.getElementById('money'),
+			speed: document.getElementById('speed'),
 		}
 	);
 
-	let map = new Map(firstMap.width, firstMap.height);
-	map.importMap(firstMap);
+	let map = new Map();
 
 	game.start();
 	game.loadMap(map);
@@ -60,6 +58,14 @@ window.onload = () => {
 			case 'Escape':
 				game.placeTower = false;
 				game.clear();
+				break;
+
+			case 'ArrowRight':
+				game.increaseSpeed();
+				break;
+
+			case 'ArrowLeft':
+				game.decreaseSpeed();
 				break;
 
 			default:

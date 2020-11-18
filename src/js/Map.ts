@@ -7,36 +7,43 @@ import BridgeTile from './Tiles/BridgeTile';
 import PathNode from './PathNode';
 import Path from './Path';
 
-export default class Map {
-	tiles: Tile[];
-	path = new Path();
+import firstMap, { mapObject } from './maps/first';
+import secondMap from './maps/second';
 
-	constructor(
-		public width: number,
-		public height: number,
-		public tileSize = {
-			width: 32,
-			height: 32,
-		}
-	) {
-		this.tiles = new Array(width * height).fill(
-			new BlankTile(this.tileSize.width, this.tileSize.height)
-		);
+export default class Map {
+	tiles: Tile[] = [];
+	path = new Path();
+	maps: mapObject[] = [firstMap, secondMap];
+	width: number = 0;
+	height: number = 0;
+	tileSize = {
+		width: 32,
+		height: 32,
+	};
+
+	constructor() {
+		this.importMap(this.maps[0]);
 	}
 
-	importMap = (mapObject: {
-		width: number;
-		height: number;
-		path: number[][];
-		data: string;
-	}) => {
+	importMap = (mapObject: mapObject) => {
 		let mapData = mapObject.data.replace(/\s+/g, '');
+		this.path = new Path();
+
+		this.width = mapObject.width;
+		this.height = mapObject.height;
+
+		this.tileSize = mapObject.tileSize;
+
+		this.tiles = new Array(this.width * this.height).fill(
+			new BlankTile(this.tileSize.width, this.tileSize.height)
+		);
 
 		for (let i = 0; i < mapData.length; i++) {
 			let char = mapData[i];
+
 			switch (char) {
 				case 'W':
-					this.setTimeRaw(
+					this.setTileRaw(
 						i,
 						new WaterTile(
 							this.tileSize.width,
@@ -46,7 +53,7 @@ export default class Map {
 					);
 					break;
 				case 'L':
-					this.setTimeRaw(
+					this.setTileRaw(
 						i,
 						new LandTile(
 							this.tileSize.width,
@@ -88,7 +95,7 @@ export default class Map {
 		}
 	};
 
-	setTimeRaw = (index: number, tile: Tile) => {
+	setTileRaw = (index: number, tile: Tile) => {
 		this.tiles[index] = tile;
 	};
 

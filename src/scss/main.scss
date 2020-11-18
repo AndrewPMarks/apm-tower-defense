@@ -10,25 +10,49 @@ body {
 	content: '$';
 }
 
-#tower-overlay {
+#game-controls {
+	left: 0;
+	background-color: #00000066;
+
+	.heading {
+		font-size: 1.3em;
+		padding-bottom: 0.3em;
+	}
+
+	.button-group {
+		display: flex;
+		flex-direction: column;
+
+		.control-button {
+			margin-bottom: 0.4em;
+		}
+	}
+}
+
+#tower-overlay,
+#game-controls {
 	position: fixed;
 	box-sizing: border-box;
 	bottom: 0;
 	width: 200px;
-	left: 0;
 	top: 0;
-	background-color: #000000aa;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 0.1s linear;
 	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
 	color: white;
 	padding: 1em;
 	font-size: 14px;
+}
+
+#tower-overlay {
+	background-color: #00000099;
+	opacity: 0;
+	pointer-events: none;
+	left: -25px;
+	transition: all 0.1s ease-out;
 
 	&.visible {
 		pointer-events: all;
 		opacity: 1;
+		left: 0;
 	}
 
 	.stat {

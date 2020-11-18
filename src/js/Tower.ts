@@ -3,12 +3,13 @@ import Projectile from './Projectile';
 
 export default class Tower {
 	projectile: Projectile;
-	fireRatePS = 3;
+	fireRatePS = 2;
 	lastFire = 0;
-	range = 3;
 	direction = Math.PI * 2 * Math.random();
 	selected = false;
 	damageDone = 0;
+	baseCost = 120;
+	range = 3;
 	pos = {
 		x: 0,
 		y: 0,
@@ -16,6 +17,53 @@ export default class Tower {
 	targetingMode = 'first';
 	age = 0;
 	currentTarget: Enemy;
+	currentLevel = 0;
+	maxLevel: number;
+
+	levels = [
+		{
+			fireRatePS: 2,
+			projectileDamage: 1,
+			cost: 0,
+			range: 3,
+		},
+		{
+			fireRatePS: 3,
+			projectileDamage: 1,
+			cost: 80,
+			range: 3,
+		},
+		{
+			fireRatePS: 4,
+			projectileDamage: 1,
+			cost: 100,
+			range: 3,
+		},
+		{
+			fireRatePS: 4,
+			projectileDamage: 2,
+			cost: 120,
+			range: 4,
+		},
+		{
+			fireRatePS: 4,
+			projectileDamage: 4,
+			cost: 200,
+			range: 4,
+		},
+		{
+			fireRatePS: 8,
+			projectileDamage: 4,
+			cost: 400,
+			range: 5,
+		},
+		{
+			fireRatePS: 12,
+			projectileDamage: 5,
+			cost: 1000,
+			range: 6,
+		},
+	];
 
 	constructor(
 		public x: number,
@@ -25,8 +73,31 @@ export default class Tower {
 		public tileX: number,
 		public tileY: number
 	) {
-		this.projectile = new Projectile(2);
+		this.projectile = new Projectile(1);
+		this.maxLevel = this.levels.length - 1;
 	}
+
+	upgrade = () => {
+		let cost = this.getUpgradeCost();
+		if (cost) {
+			this.currentLevel++;
+			this.projectile = new Projectile(
+				this.levels[this.currentLevel].projectileDamage
+			);
+			this.fireRatePS = this.levels[this.currentLevel].fireRatePS;
+			this.range = this.levels[this.currentLevel].range;
+		} else {
+			return false;
+		}
+	};
+
+	getUpgradeCost = () => {
+		if (this.currentLevel < this.maxLevel) {
+			return this.levels[this.currentLevel + 1].cost;
+		} else {
+			return false;
+		}
+	};
 
 	select = () => {
 		this.selected = true;
@@ -121,6 +192,7 @@ export default class Tower {
 			ctx.fill();
 		}
 
+		ctx.lineWidth = this.targetingMode == 'first' ? 2 : 5;
 		ctx.fillStyle = '#A0522D';
 		ctx.beginPath();
 		ctx.arc(
@@ -132,12 +204,17 @@ export default class Tower {
 		);
 		ctx.fill();
 
-		ctx.strokeStyle = '#8B4513';
+		ctx.strokeStyle = '#aaa9ad';
 		ctx.beginPath();
 		ctx.moveTo(this.x + offset.x, this.y + offset.y);
+		let multiplier = this.targetingMode == 'first' ? 2 : 1.3;
 		ctx.lineTo(
-			this.x + offset.x + this.radius * 1.5 * Math.cos(this.direction),
-			this.y + offset.y + this.radius * 1.5 * Math.sin(this.direction)
+			this.x +
+				offset.x +
+				this.radius * Math.cos(this.direction) * multiplier,
+			this.y +
+				offset.y +
+				this.radius * Math.sin(this.direction) * multiplier
 		);
 		ctx.stroke();
 	};

@@ -6,10 +6,21 @@
 	<body>
 		<canvas id="game"></canvas>
 
+		<div id="game-controls">
+			<div class="heading">Map List</div>
+			<div id="map-selector" class="button-group"></div>
+			<div class="heading">General</div>
+			<div id="general-controls" class="button-group"></div>
+		</div>
+
 		<div id="tower-overlay">
-			<div class="stat">
-				<div class="label">Targeting mode:</div>
-				<div class="value" id="stat-targeting-mode"></div>
+			<div class="stat action">
+				<div class="label">Upgrade</div>
+				<button class="button" id="upgrade-button"></button>
+			</div>
+			<div class="stat action">
+				<div class="label">Targeting mode</div>
+				<button class="button" id="stat-targeting-mode"></button>
 			</div>
 			<div class="stat">
 				<div class="label">Fire rate:</div>
@@ -20,19 +31,27 @@
 				<div class="value" id="stat-damage"></div>
 			</div>
 			<div class="stat">
-				<div class="label">Total damage done:</div>
+				<div class="label">Range:</div>
+				<div class="value" id="stat-range"></div>
+			</div>
+			<div class="stat">
+				<div class="label">Damage done:</div>
 				<div class="value" id="stat-damage-done"></div>
 			</div>
 		</div>
 
 		<div id="stats">
 			<div class="stat">
+				<div class="label">Money</div>
+				<div class="value" id="money">0</div>
+			</div>
+			<div class="stat">
 				<div class="label">Lives</div>
 				<div class="value" id="lives">--</div>
 			</div>
 			<div class="stat">
-				<div class="label">Money</div>
-				<div class="value" id="money">0</div>
+				<div class="label">Speed</div>
+				<div class="value" id="speed">1x</div>
 			</div>
 			<div class="stat secondary">
 				<div class="label">Enemy Count</div>

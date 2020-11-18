@@ -1,4 +1,17 @@
-const map = {
+export type mapObject = {
+	width: number;
+	height: number;
+	tileSize: {
+		width: number;
+		height: number;
+	};
+	path: number[][];
+	data: string;
+	name: string;
+};
+
+const map: mapObject = {
+	name: 'First',
 	width: 20,
 	height: 20,
 	tileSize: { width: 32, height: 32 },

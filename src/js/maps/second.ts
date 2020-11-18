@@ -1,4 +1,7 @@
-const map = {
+import { mapObject } from './first';
+
+const map: mapObject = {
+	name: 'Second',
 	width: 20,
 	height: 20,
 	tileSize: { width: 32, height: 32 },
