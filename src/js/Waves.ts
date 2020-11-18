@@ -11,13 +11,13 @@ export default class Waves {
 			this.getWave(this.count(1, 5, 750)),
 			this.getWave(this.count(1, 10, 500)),
 			this.getWave(this.count(2, 10, 600)),
-			this.getWave(
+			/* this.getWave(
 				this.sequenceCount([
 					[1, 10, 500],
 					[2, 6, 500, 0],
 				])
 			),
-			this.getWave(this.count(3, 5, 500)),
+			this.getWave(this.count(3, 5, 500)), */
 		];
 	}
 

@@ -51,6 +51,7 @@ export default class TD {
 			enemyCount?: HTMLElement;
 			moneyCount?: HTMLElement;
 			speed?: HTMLElement;
+			victoryOverlay: HTMLElement;
 		}
 	) {
 		if (this.canvas == null)
@@ -483,7 +484,7 @@ export default class TD {
 				this.currentWave++;
 				this.startWave(this.currentWave);
 			} else {
-				//console.log('no more waves!');
+				this.els.victoryOverlay?.classList.add('visible');
 			}
 		}
 	};
