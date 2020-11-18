@@ -14,7 +14,7 @@ export default class Waves {
 			this.getWave(
 				this.sequenceCount([
 					[1, 10, 500],
-					[2, 6, 500],
+					[2, 6, 500, 0],
 				])
 			),
 			this.getWave(this.count(3, 5, 500)),
@@ -37,7 +37,10 @@ export default class Waves {
 				});
 			}
 			//Delay the next count in sequence
-			countDelay = (count[1] + 1) * count[2];
+			countDelay =
+				count[1] +
+				(count.length > 3 ? 0 : 1) * count[2] +
+				(count.length > 3 ? count[3] : 0);
 		}
 
 		return ret;
