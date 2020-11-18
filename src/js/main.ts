@@ -2,6 +2,7 @@ import '../scss/main.scss';
 import TD from './TD';
 import Map from './Map';
 import Enemy from './Enemy';
+import Wave from './Wave';
 
 window.onload = () => {
 	const game = new TD(
@@ -24,6 +25,14 @@ window.onload = () => {
 
 	game.start();
 	game.loadMap(map);
+
+	/* let wave = new Wave(game, [
+		{ enemy: new Enemy(1, game.map, game), time: 1000 },
+		{ enemy: new Enemy(1, game.map, game), time: 1000 },
+		{ enemy: new Enemy(1, game.map, game), time: 1000 },
+	]);
+
+	game.startWave(wave); */
 
 	window.onkeydown = (e: KeyboardEvent) => {
 		switch (e.code) {

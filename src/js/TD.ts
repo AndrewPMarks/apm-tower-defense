@@ -2,6 +2,8 @@ import Enemy from './Enemy';
 import LandTile from './Tiles/LandTile';
 import Map from './Map';
 import Tower from './Tower';
+import Wave from './Wave';
+import Waves from './Waves';
 
 export default class TD {
 	ctx: CanvasRenderingContext2D;
@@ -19,6 +21,7 @@ export default class TD {
 	enemyCounter = false;
 	moneyCounter = false;
 	speedDisplay = false;
+	waveSent = false;
 	map: Map;
 	enemies: Enemy[] = [];
 	lives: number;
@@ -26,6 +29,9 @@ export default class TD {
 	placeTower = false;
 	selectedTower: Tower;
 	money: number;
+	wave: Wave;
+	currentWave: number = 0;
+	waves: Waves;
 
 	mousePos = {
 		x: 0,
@@ -76,7 +82,15 @@ export default class TD {
 		window.oncontextmenu = this.handleClick;
 
 		window.onmousemove = this.handleMouseMove;
+
+		this.waves = new Waves(this);
 	}
+
+	startWave = (wave: number) => {
+		this.enemies = [];
+		this.waveSent = false;
+		this.wave = this.waves.waves[this.currentWave];
+	};
 
 	updateBalance = () => {
 		this.els.moneyCount.innerText = `${this.money}`;
@@ -237,6 +251,9 @@ export default class TD {
 		this.enemies = [];
 		this.towers = [];
 		this.money = this.startingMoney;
+		this.waves = new Waves(this);
+		this.currentWave = 0;
+		this.wave = this.waves.waves[0];
 		this.updateBalance();
 		this.clear();
 		this.placeTower = false;
@@ -273,14 +290,25 @@ export default class TD {
 		}
 
 		let generalControls = controlEl.querySelector('#general-controls');
+
+		let towerButton = document.createElement('button');
+		towerButton.innerText = 'Place Tower';
+		towerButton.classList.add('control-button');
+		towerButton.onclick = () => {
+			this.placeTower = !this.placeTower;
+		};
+
 		let resetButton = document.createElement('button');
 		resetButton.innerText = 'Reset';
-		resetButton.classList.add('map-option', 'control-button');
+		resetButton.classList.add('control-button');
 		resetButton.onclick = () => {
 			this.reset();
 		};
 
+		generalControls.appendChild(towerButton);
 		generalControls.appendChild(resetButton);
+
+		this.startWave(0);
 	};
 
 	sizeFill = () => {
@@ -387,7 +415,7 @@ export default class TD {
 
 			//Place tower under cursor in placement mode
 			if (this.placeTower) {
-				this.ctx.fillStyle = '#A0522D66';
+				this.ctx.fillStyle = '#40e0d0AA';
 				this.ctx.beginPath();
 				this.ctx.arc(
 					this.mousePos.x,
@@ -443,6 +471,19 @@ export default class TD {
 		for (let enemy of this.enemies) {
 			if (enemy) {
 				enemy.update(delta);
+			}
+		}
+
+		//update wave
+		this.wave?.update(delta);
+
+		if (this.enemies.length === 0 && this.waveSent) {
+			if (this.currentWave < this.waves.waves.length - 1) {
+				this.addScore(this.wave.bonus);
+				this.currentWave++;
+				this.startWave(this.currentWave);
+			} else {
+				//console.log('no more waves!');
 			}
 		}
 	};
