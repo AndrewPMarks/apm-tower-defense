@@ -18,6 +18,7 @@ window.onload = () => {
 			enemyCount: document.getElementById('enemy-count'),
 			moneyCount: document.getElementById('money'),
 			speed: document.getElementById('speed'),
+			victoryOverlay: document.getElementById('victory'),
 		}
 	);
 

@@ -261,6 +261,7 @@ export default class TD {
 		this.map.clear();
 		this.els.enemyCount.innerText = this.enemies.length.toString();
 		this.takeLives(0);
+		this.els.victoryOverlay.classList.remove('visible');
 	};
 
 	killPlayer = () => {
@@ -484,6 +485,9 @@ export default class TD {
 				this.currentWave++;
 				this.startWave(this.currentWave);
 			} else {
+				//win =
+				this.selectedTower = null;
+				this.closeTowerOverlay();
 				this.els.victoryOverlay?.classList.add('visible');
 			}
 		}
