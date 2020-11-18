@@ -27,14 +27,6 @@ window.onload = () => {
 	game.start();
 	game.loadMap(map);
 
-	/* let wave = new Wave(game, [
-		{ enemy: new Enemy(1, game.map, game), time: 1000 },
-		{ enemy: new Enemy(1, game.map, game), time: 1000 },
-		{ enemy: new Enemy(1, game.map, game), time: 1000 },
-	]);
-
-	game.startWave(wave); */
-
 	window.onkeydown = (e: KeyboardEvent) => {
 		switch (e.code) {
 			case 'Digit1':

@@ -7,7 +7,7 @@ export default class Wave {
 	constructor(
 		public game: TD,
 		public waveData: { enemyType: number; time: number }[],
-		public bonus = 60
+		public bonus = 40
 	) {}
 
 	update = (delta: number) => {

@@ -32,6 +32,8 @@ export default class TD {
 	wave: Wave;
 	currentWave: number = 0;
 	waves: Waves;
+	autoPlay = false;
+	nextLevelReady = true;
 
 	mousePos = {
 		x: 0,
@@ -91,10 +93,28 @@ export default class TD {
 		this.enemies = [];
 		this.waveSent = false;
 		this.wave = this.waves.waves[this.currentWave];
+		this.nextLevelReady = false;
+		(document.querySelector(
+			'#start-button'
+		) as HTMLSelectElement).disabled = true;
+		if (this.autoPlay) {
+			let startButton = this.els.gameControls.querySelector(
+				'#start-button'
+			) as HTMLSelectElement;
+
+			startButton.disabled = true;
+		}
 	};
 
 	updateBalance = () => {
 		this.els.moneyCount.innerText = `${this.money}`;
+
+		let upgradeButton = document.querySelector(
+			'#upgrade-button'
+		) as HTMLSelectElement;
+		if (this.selectedTower)
+			upgradeButton.disabled =
+				this.money < this.selectedTower.getUpgradeCost();
 	};
 
 	clear = () => {
@@ -158,7 +178,7 @@ export default class TD {
 		) as HTMLSelectElement;
 		let cost = this.selectedTower.getUpgradeCost();
 		upgradeButtonEl.innerHTML = cost ? `$${cost.toString()}` : 'MAX';
-		upgradeButtonEl.disabled = !cost;
+		upgradeButtonEl.disabled = cost ? this.money < cost : false;
 
 		upgradeButtonEl.onclick = (e) => {
 			let el = e.target as HTMLSelectElement;
@@ -166,9 +186,9 @@ export default class TD {
 			if (cost && this.money >= cost) {
 				this.selectedTower.upgrade();
 				this.money -= cost;
-				this.updateBalance();
 				this.openTowerOverlay();
 			}
+			this.updateBalance();
 		};
 	};
 
@@ -248,6 +268,11 @@ export default class TD {
 	};
 
 	reset = () => {
+		this.autoPlay = false;
+		this.nextLevelReady = true;
+		(document.querySelector(
+			'#start-button'
+		) as HTMLSelectElement).disabled = false;
 		this.lives = this.startingLives;
 		this.enemies = [];
 		this.towers = [];
@@ -265,7 +290,6 @@ export default class TD {
 	};
 
 	killPlayer = () => {
-		console.log('You have ran out of lives! Resetting the game...');
 		this.reset();
 	};
 
@@ -293,6 +317,32 @@ export default class TD {
 
 		let generalControls = controlEl.querySelector('#general-controls');
 
+		let startButton = document.createElement('button');
+		startButton.innerText = 'Play';
+		startButton.id = 'start-button';
+		startButton.classList.add('control-button');
+		startButton.onclick = () => {
+			if (!this.autoPlay && this.nextLevelReady) {
+				this.startWave(this.currentWave);
+			}
+		};
+
+		let autoPlayButton = document.createElement('button');
+		autoPlayButton.innerText = 'Enable Autoplay';
+		autoPlayButton.id = 'autoplay-button';
+		autoPlayButton.classList.add('control-button');
+		autoPlayButton.onclick = () => {
+			this.autoPlay = !this.autoPlay;
+			autoPlayButton.innerText = this.autoPlay
+				? 'Disable Autoplay'
+				: 'Enable Autoplay';
+
+			startButton.disabled = this.autoPlay && !this.nextLevelReady;
+			if (this.autoPlay && this.nextLevelReady) {
+				this.startWave(this.currentWave);
+			}
+		};
+
 		let towerButton = document.createElement('button');
 		towerButton.innerText = 'Place Tower';
 		towerButton.classList.add('control-button');
@@ -307,10 +357,10 @@ export default class TD {
 			this.reset();
 		};
 
+		generalControls.appendChild(startButton);
+		generalControls.appendChild(autoPlayButton);
 		generalControls.appendChild(towerButton);
 		generalControls.appendChild(resetButton);
-
-		this.startWave(0);
 	};
 
 	sizeFill = () => {
@@ -331,8 +381,9 @@ export default class TD {
 	addScore = (points: number) => {
 		this.money += points;
 		//Causes the damage done to update with a score
-		if (this.els.towerOverlay.classList.contains('visible'))
+		if (this.els.towerOverlay.classList.contains('visible')) {
 			this.openTowerOverlay();
+		}
 
 		if (this.moneyCounter)
 			this.els.moneyCount.innerText = this.money.toString();
@@ -471,19 +522,34 @@ export default class TD {
 
 		//update enemies
 		for (let enemy of this.enemies) {
-			if (enemy) {
-				enemy.update(delta);
-			}
+			enemy?.update(delta);
 		}
 
 		//update wave
 		this.wave?.update(delta);
 
-		if (this.enemies.length === 0 && this.waveSent) {
+		if (
+			this.enemies.length === 0 &&
+			this.waveSent &&
+			!this.nextLevelReady
+		) {
+			this.nextLevelReady = true;
+			(document.querySelector(
+				'#start-button'
+			) as HTMLSelectElement).disabled = false;
+
 			if (this.currentWave < this.waves.waves.length - 1) {
 				this.addScore(this.wave.bonus);
 				this.currentWave++;
-				this.startWave(this.currentWave);
+
+				if (this.autoPlay) {
+					this.startWave(this.currentWave);
+				} else {
+					this.nextLevelReady = true;
+					(document.querySelector(
+						'#start-button'
+					) as HTMLSelectElement).disabled = false;
+				}
 			} else {
 				//win =
 				this.selectedTower = null;

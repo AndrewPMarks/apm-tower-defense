@@ -20,7 +20,7 @@ body {
 	flex-direction: column;
 	color: white;
 	justify-content: center;
-	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.7);
+	box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.7);
 	opacity: 0;
 	pointer-events: none;
 	transition: all 0.2s;
@@ -77,9 +77,15 @@ button {
 			transition: all 0.08s ease-out;
 			box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.3);
 
-			&:hover {
+			&:hover:not(:disabled) {
 				background-color: #101010;
 				box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.7);
+			}
+
+			&:disabled {
+				background-color: #404040;
+				color: #cccccc;
+				cursor: default;
 			}
 		}
 	}
