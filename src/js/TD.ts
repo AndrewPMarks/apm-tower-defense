@@ -10,7 +10,7 @@ export default class TD {
 		paused: true,
 	};
 	speed = 1;
-	startingLives = 250;
+	startingLives = 100;
 	startingMoney = 250;
 	lastTime = 0;
 	frameCount = 0;
@@ -118,7 +118,10 @@ export default class TD {
 		damageDoneEl.innerHTML = `${this.selectedTower.damageDone}`;
 
 		let rangeEl = el.querySelector('#stat-range');
-		rangeEl.innerHTML = `${this.selectedTower.range}`;
+		rangeEl.innerHTML = `${this.selectedTower.range} tiles`;
+
+		let penetrationEl = el.querySelector('#stat-penetration');
+		penetrationEl.innerHTML = `${this.selectedTower.projectile.penetration} enemies`;
 
 		let targetingModeButtonEl = el.querySelector(
 			'#stat-targeting-mode'
@@ -140,6 +143,7 @@ export default class TD {
 		) as HTMLSelectElement;
 		let cost = this.selectedTower.getUpgradeCost();
 		upgradeButtonEl.innerHTML = cost ? `$${cost.toString()}` : 'MAX';
+		upgradeButtonEl.disabled = !cost;
 
 		upgradeButtonEl.onclick = (e) => {
 			let el = e.target as HTMLSelectElement;
@@ -212,7 +216,6 @@ export default class TD {
 							this.map.tileSize.width / 2,
 						tileY * this.map.tileSize.height +
 							this.map.tileSize.width / 2,
-						10,
 						this.map.tileSize.width,
 						tileX,
 						tileY

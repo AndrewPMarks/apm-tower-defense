@@ -51,6 +51,14 @@ window.onload = () => {
 				game.createEnemy(new Enemy(6, game.map, game));
 				break;
 
+			case 'Digit7':
+				game.createEnemy(new Enemy(10, game.map, game));
+				break;
+
+			case 'Digit8':
+				game.createEnemy(new Enemy(15, game.map, game));
+				break;
+
 			case 'KeyP':
 				game.placeTower = true;
 				break;
