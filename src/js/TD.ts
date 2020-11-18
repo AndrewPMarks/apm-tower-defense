@@ -279,7 +279,7 @@ export default class TD {
 		this.money = this.startingMoney;
 		this.waves = new Waves(this);
 		this.currentWave = 0;
-		this.wave = this.waves.waves[0];
+		this.wave = this.waves.waves[this.currentWave];
 		this.updateBalance();
 		this.clear();
 		this.placeTower = false;
@@ -542,7 +542,7 @@ export default class TD {
 				this.addScore(this.wave.bonus);
 				this.currentWave++;
 
-				if (this.autoPlay) {
+				if (this.autoPlay && this.nextLevelReady) {
 					this.startWave(this.currentWave);
 				} else {
 					this.nextLevelReady = true;
