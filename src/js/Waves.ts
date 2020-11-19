@@ -8,32 +8,51 @@ export default class Waves {
 
 	constructor(public game: TD) {
 		this.waves = [
+			//1
 			this.getWave(this.count(1, 5, 750)),
+			//2
 			this.getWave(this.count(1, 10, 500)),
+			//3
 			this.getWave(this.count(2, 10, 600)),
+			//4
 			this.getWave(
 				this.sequenceCount([
 					[1, 10, 500],
 					[2, 6, 500],
 				])
 			),
+			//5
 			this.getWave(this.count(3, 5, 500)),
+			//6
 			this.getWave(this.count(3, 10, 500)),
+			//7
 			this.getWave(
 				this.sequenceCount([
 					[4, 1, 200],
-					[3, 10, 400, 0],
+					[3, 10, 400],
 				])
 			),
-			this.getWave(this.count(5, 10, 200)),
-			this.getWave(this.count(6, 10, 400)),
+			//8
+			this.getWave(this.count(5, 5, 250)),
+			//9
+			this.getWave(this.count(6, 8, 400)),
+			//10
 			this.getWave(this.count(10, 10, 750)),
+			//11
+			this.getWave(this.count(15, 1, 10)),
+			//12
+			this.getWave(this.count(4, 60, 250)),
+			//13
+			this.getWave(
+				this.sequenceCount([
+					[15, 1, 250],
+					[10, 1, 250],
+					[15, 1, 250],
+					[10, 1, 250],
+				])
+			),
 		];
 	}
-
-	getWave = (fn: { enemyType: number; time: number }[], bonus?: number) => {
-		return new Wave(this.game, fn, bonus);
-	};
 
 	sequenceCount = (counts: number[][]) => {
 		let ret: { enemyType: number; time: number }[] = [];
@@ -66,5 +85,9 @@ export default class Waves {
 			});
 		}
 		return ret;
+	};
+
+	getWave = (fn: { enemyType: number; time: number }[], bonus?: number) => {
+		return new Wave(this.game, fn, bonus);
 	};
 }

@@ -93,6 +93,9 @@ export default class TD {
 		this.enemies = [];
 		this.waveSent = false;
 		this.wave = this.waves.waves[this.currentWave];
+		document.getElementById('wave').innerText = (
+			this.currentWave + 1
+		).toString();
 		this.nextLevelReady = false;
 		(document.querySelector(
 			'#start-button'
@@ -273,19 +276,20 @@ export default class TD {
 		(document.querySelector(
 			'#start-button'
 		) as HTMLSelectElement).disabled = false;
+		document.querySelector('#wave').innerHTML = '1';
 		this.lives = this.startingLives;
 		this.enemies = [];
 		this.towers = [];
 		this.money = this.startingMoney;
 		this.waves = new Waves(this);
 		this.currentWave = 0;
-		this.wave = this.waves.waves[this.currentWave];
+		this.wave = null;
 		this.updateBalance();
 		this.clear();
 		this.placeTower = false;
 		this.map.clear();
 		this.els.enemyCount.innerText = this.enemies.length.toString();
-		this.takeLives(0);
+		document.this.takeLives(0);
 		this.els.victoryOverlay.classList.remove('visible');
 	};
 
@@ -309,8 +313,8 @@ export default class TD {
 			button.innerText = map.name;
 			button.classList.add('map-option', 'control-button');
 			button.onclick = () => {
-				this.map.importMap(map);
 				this.reset();
+				this.map.importMap(map);
 			};
 			mapSelector.appendChild(button);
 		}

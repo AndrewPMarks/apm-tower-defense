@@ -93,6 +93,7 @@ button {
 
 #tower-overlay,
 #game-controls {
+	backdrop-filter: blur(8px);
 	position: fixed;
 	box-sizing: border-box;
 	bottom: 0;
@@ -106,7 +107,6 @@ button {
 
 #tower-overlay {
 	background-color: #00000099;
-	backdrop-filter: blur(8px);
 	opacity: 0;
 	pointer-events: none;
 	left: -25px;
@@ -162,6 +162,7 @@ button {
 
 #stats {
 	position: fixed;
+	backdrop-filter: blur(8px);
 	top: 0;
 	right: 0;
 	padding: 0.4em 1em;
