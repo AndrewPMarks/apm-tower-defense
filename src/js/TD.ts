@@ -93,9 +93,9 @@ export default class TD {
 		this.enemies = [];
 		this.waveSent = false;
 		this.wave = this.waves.waves[this.currentWave];
-		document.getElementById('wave').innerText = (
+		document.getElementById('wave').innerText = `${
 			this.currentWave + 1
-		).toString();
+		} / ${this.waves.waves.length}`;
 		this.nextLevelReady = false;
 		(document.querySelector(
 			'#start-button'
@@ -276,7 +276,9 @@ export default class TD {
 		(document.querySelector(
 			'#start-button'
 		) as HTMLSelectElement).disabled = false;
-		document.querySelector('#wave').innerHTML = '1';
+		document.querySelector(
+			'#wave'
+		).innerHTML = `1 / ${this.waves.waves.length}`;
 		this.lives = this.startingLives;
 		this.enemies = [];
 		this.towers = [];
