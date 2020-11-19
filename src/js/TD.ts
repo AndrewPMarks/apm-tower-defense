@@ -289,7 +289,7 @@ export default class TD {
 		this.placeTower = false;
 		this.map.clear();
 		this.els.enemyCount.innerText = this.enemies.length.toString();
-		document.this.takeLives(0);
+		this.takeLives(0);
 		this.els.victoryOverlay.classList.remove('visible');
 	};
 
